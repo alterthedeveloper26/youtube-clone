@@ -9,6 +9,13 @@
     "dev:backend": "yarn workspace backend start:dev",
     "dev:frontend": "yarn workspace frontend dev",
     "build": "yarn workspaces run build",
-    "test": "yarn workspaces run test"
+    "test": "yarn workspaces run test",
+    "prepare": "husky",
+    "commitlint": "commitlint --edit"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.2.0",
+    "@commitlint/config-conventional": "^20.2.0",
+    "husky": "^9.1.7"
   }
 }
