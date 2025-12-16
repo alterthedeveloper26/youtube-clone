@@ -1,0 +1,14 @@
+{
+  "name": "netflix-clone-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:backend": "yarn workspace backend start:dev",
+    "dev:frontend": "yarn workspace frontend dev",
+    "build": "yarn workspaces run build",
+    "test": "yarn workspaces run test"
+  }
+}
