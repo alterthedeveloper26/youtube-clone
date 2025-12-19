@@ -40,27 +40,7 @@ export const HomeNavbar = () => {
         </div>
 
         <div className="flex items-center justify-center gap-3">
-          {isLogin && (
-            <>
-              <Button className="rounded-full bg-light-gray-100 text-black">
-                <Plus className="size-6" />
-                Create
-              </Button>
-              <Button className="rounded-full size-10 p-0" variant="ghost">
-                <Bell className="size-6" />
-              </Button>
-              <Link href={"/"}>
-                <Avatar>
-                  <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="@shadcn"
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-              </Link>
-            </>
-          )}
-          {!isLogin && <AuthButton />}
+          <AuthButton />
         </div>
       </div>
     </div>
