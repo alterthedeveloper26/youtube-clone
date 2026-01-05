@@ -16,17 +16,16 @@ export class ViewsRepository {
 
   async findByVideoId(videoId: string): Promise<VideoView[]> {
     return this.repository.find({
-      where: { videoId, deletedAt: null },
+      where: { videoId, deletedAt: undefined },
       order: { createdAt: 'DESC' },
     });
   }
 
   async findByUserId(userId: string): Promise<VideoView[]> {
     return this.repository.find({
-      where: { userId, deletedAt: null },
+      where: { userId, deletedAt: undefined },
       relations: ['video', 'video.channel'],
       order: { createdAt: 'DESC' },
     });
   }
 }
-

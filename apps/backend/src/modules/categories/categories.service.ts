@@ -12,7 +12,7 @@ export class CategoriesService {
 
   async findAll(): Promise<Category[]> {
     return this.repository.find({
-      where: { deletedAt: null },
+      where: { deletedAt: undefined },
       order: { name: 'ASC' },
     });
   }
@@ -21,4 +21,3 @@ export class CategoriesService {
     return this.repository.save(data);
   }
 }
-

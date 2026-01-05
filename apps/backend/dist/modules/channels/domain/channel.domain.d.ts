@@ -1,0 +1,31 @@
+import { BannerUrl, AvatarUrl } from './types/url.types';
+export declare class ChannelDomain {
+    private id;
+    private userId;
+    private name;
+    private handle;
+    private description;
+    private bannerUrl;
+    private avatarUrl;
+    private subscriberCount;
+    constructor(id: string, userId: string, name: string, handle: string, description?: string | null, bannerUrl?: string | null, avatarUrl?: string | null, subscriberCount?: number);
+    setName(name: string): void;
+    setHandle(handle: string): void;
+    static normalizeHandle(handle: string): string;
+    setDescription(description: string | null): void;
+    canBeUpdated(): boolean;
+    canBeDeleted(): boolean;
+    incrementSubscriberCount(): void;
+    decrementSubscriberCount(): void;
+    getId(): string;
+    getUserId(): string;
+    getName(): string;
+    getHandle(): string;
+    getDescription(): string | null;
+    getBannerUrl(): BannerUrl | null;
+    getAvatarUrl(): AvatarUrl | null;
+    getSubscriberCount(): number;
+    setBannerUrl(url: string | null): void;
+    setAvatarUrl(url: string | null): void;
+    validate(): void;
+}

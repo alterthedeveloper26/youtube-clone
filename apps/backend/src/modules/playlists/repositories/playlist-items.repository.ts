@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { PlaylistItem } from '../entities/playlist-item.entity';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class PlaylistItemsRepository {
 
   async findByPlaylistId(playlistId: string): Promise<PlaylistItem[]> {
     return this.repository.find({
-      where: { playlistId, deletedAt: null },
+      where: { playlistId, deletedAt: IsNull() },
       relations: ['video', 'video.channel'],
       order: { position: 'ASC' },
     });
@@ -27,7 +27,7 @@ export class PlaylistItemsRepository {
     videoId: string,
   ): Promise<PlaylistItem | null> {
     return this.repository.findOne({
-      where: { playlistId, videoId, deletedAt: null },
+      where: { playlistId, videoId, deletedAt: IsNull() },
     });
   }
 

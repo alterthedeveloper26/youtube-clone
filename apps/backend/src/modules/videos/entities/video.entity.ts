@@ -32,7 +32,7 @@ export enum ProcessingStatus {
 
 @Entity('videos')
 export class Video extends BaseEntity {
-  @Column()
+  @Column({ type: 'uuid' })
   @Index()
   channelId: string;
 
@@ -40,22 +40,22 @@ export class Video extends BaseEntity {
   @JoinColumn({ name: 'channelId' })
   channel: Channel;
 
-  @Column({ length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   title: string;
 
   @Column({ type: 'text', nullable: true })
   description: string | null;
 
-  @Column({ length: 500 })
+  @Column({ type: 'varchar', length: 500 })
   videoUrl: string;
 
-  @Column({ length: 500, nullable: true })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   videoKey: string | null; // S3 key
 
-  @Column({ length: 500, nullable: true })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   hls720pUrl: string | null; // 720p HLS URL
 
-  @Column({ length: 500, nullable: true })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   thumbnailUrl: string | null;
 
   @Column({ type: 'int', default: 0 })

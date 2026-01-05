@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Tag } from './entities/tag.entity';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class TagsService {
 
   async findAll(): Promise<Tag[]> {
     return this.repository.find({
-      where: { deletedAt: null },
+      where: { deletedAt: IsNull() },
       order: { name: 'ASC' },
     });
   }
@@ -21,4 +21,3 @@ export class TagsService {
     return this.repository.save(data);
   }
 }
-

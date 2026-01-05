@@ -4,10 +4,10 @@ import { Video } from '../../videos/entities/video.entity';
 
 @Entity('tags')
 export class Tag extends BaseEntity {
-  @Column({ length: 50 })
+  @Column({ type: 'varchar', length: 50 })
   name: string;
 
-  @Column({ length: 50, unique: true })
+  @Column({ type: 'varchar', length: 50, unique: true })
   @Index()
   slug: string; // URL-friendly identifier
 

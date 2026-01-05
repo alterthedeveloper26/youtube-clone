@@ -13,7 +13,7 @@ import { CommentReply } from './comment-reply.entity';
 
 @Entity('comments')
 export class Comment extends BaseEntity {
-  @Column()
+  @Column({ type: 'uuid' })
   @Index()
   videoId: string;
 
@@ -21,7 +21,7 @@ export class Comment extends BaseEntity {
   @JoinColumn({ name: 'videoId' })
   video: Video;
 
-  @Column()
+  @Column({ type: 'uuid' })
   @Index()
   userId: string;
 

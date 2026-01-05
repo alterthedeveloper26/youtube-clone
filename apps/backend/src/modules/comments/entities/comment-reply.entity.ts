@@ -5,7 +5,7 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity('comment_replies')
 export class CommentReply extends BaseEntity {
-  @Column()
+  @Column({ type: 'uuid' })
   @Index()
   commentId: string;
 
@@ -13,7 +13,7 @@ export class CommentReply extends BaseEntity {
   @JoinColumn({ name: 'commentId' })
   comment: Comment;
 
-  @Column()
+  @Column({ type: 'uuid' })
   @Index()
   userId: string;
 

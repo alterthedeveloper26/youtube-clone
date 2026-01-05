@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { VideoLike, LikeType } from '../entities/video-like.entity';
 
 @Injectable()
@@ -17,7 +17,11 @@ export class LikesRepository {
   }): Promise<VideoLike> {
     // Check if like already exists
     const existing = await this.repository.findOne({
-      where: { videoId: data.videoId, userId: data.userId, deletedAt: null },
+      where: {
+        videoId: data.videoId,
+        userId: data.userId,
+        deletedAt: IsNull(),
+      },
     });
 
     if (existing) {
@@ -34,7 +38,7 @@ export class LikesRepository {
     userId: string,
   ): Promise<VideoLike | null> {
     return this.repository.findOne({
-      where: { videoId, userId, deletedAt: null },
+      where: { videoId, userId, deletedAt: IsNull() },
     });
   }
 

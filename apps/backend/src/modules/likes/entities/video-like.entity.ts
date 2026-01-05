@@ -11,7 +11,7 @@ export enum LikeType {
 @Entity('video_likes')
 @Unique(['videoId', 'userId'])
 export class VideoLike extends BaseEntity {
-  @Column()
+  @Column({ type: 'uuid' })
   @Index()
   videoId: string;
 
@@ -19,7 +19,7 @@ export class VideoLike extends BaseEntity {
   @JoinColumn({ name: 'videoId' })
   video: Video;
 
-  @Column()
+  @Column({ type: 'uuid' })
   @Index()
   userId: string;
 

@@ -21,7 +21,7 @@ export class SubscriptionsService {
 
     // Check if trying to subscribe to own channel
     const channel = await this.channelsRepository.findById(channelId);
-    if (channel?.userId === subscriberId) {
+    if (channel?.getUserId() === subscriberId) {
       throw new BadRequestException('Cannot subscribe to your own channel');
     }
 

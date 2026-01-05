@@ -6,7 +6,7 @@ import { User } from '../../users/entities/user.entity';
 @Entity('subscriptions')
 @Unique(['subscriberId', 'channelId'])
 export class Subscription extends BaseEntity {
-  @Column()
+  @Column({ type: 'uuid' })
   @Index()
   subscriberId: string;
 
@@ -14,7 +14,7 @@ export class Subscription extends BaseEntity {
   @JoinColumn({ name: 'subscriberId' })
   subscriber: User;
 
-  @Column()
+  @Column({ type: 'uuid' })
   @Index()
   channelId: string;
 

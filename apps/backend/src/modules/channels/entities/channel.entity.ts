@@ -13,7 +13,7 @@ import { Subscription } from '../../subscriptions/entities/subscription.entity';
 
 @Entity('channels')
 export class Channel extends BaseEntity {
-  @Column()
+  @Column({ type: 'uuid' })
   @Index()
   userId: string;
 
@@ -21,20 +21,20 @@ export class Channel extends BaseEntity {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @Column({ length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   name: string;
 
-  @Column({ length: 50, unique: true })
+  @Column({ type: 'varchar', length: 50, unique: true })
   @Index()
   handle: string; // e.g., @username
 
   @Column({ type: 'text', nullable: true })
   description: string | null;
 
-  @Column({ nullable: true, length: 500 })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   bannerUrl: string | null;
 
-  @Column({ nullable: true, length: 500 })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   avatarUrl: string | null;
 
   @Column({ type: 'int', default: 0 })

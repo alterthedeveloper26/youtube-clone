@@ -5,7 +5,7 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity('video_views')
 export class VideoView extends BaseEntity {
-  @Column()
+  @Column({ type: 'uuid' })
   @Index()
   videoId: string;
 
@@ -13,7 +13,7 @@ export class VideoView extends BaseEntity {
   @JoinColumn({ name: 'videoId' })
   video: Video;
 
-  @Column({ nullable: true })
+  @Column({ type: 'uuid', nullable: true })
   @Index()
   userId: string | null;
 
@@ -21,7 +21,7 @@ export class VideoView extends BaseEntity {
   @JoinColumn({ name: 'userId' })
   user: User | null;
 
-  @Column({ length: 45, nullable: true })
+  @Column({ type: 'varchar', length: 45, nullable: true })
   ipAddress: string | null; // For anonymous views
 
   @Column({ type: 'int', default: 0 })
@@ -30,4 +30,3 @@ export class VideoView extends BaseEntity {
   @Column({ type: 'boolean', default: false })
   completed: boolean; // Whether video was watched to completion
 }
-

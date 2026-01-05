@@ -16,20 +16,20 @@ export class CommentsRepository {
 
   async findById(id: string): Promise<Comment | null> {
     return this.repository.findOne({
-      where: { id, deletedAt: null },
+      where: { id, deletedAt: undefined },
       relations: ['user', 'replies', 'replies.user'],
     });
   }
 
   async findByVideoId(videoId: string): Promise<Comment[]> {
     return this.repository.find({
-      where: { videoId, deletedAt: null },
+      where: { videoId, deletedAt: undefined },
       relations: ['user', 'replies', 'replies.user'],
       order: { createdAt: 'DESC' },
     });
   }
 
-  async update(id: string, data: Partial<Comment>): Promise<Comment> {
+  async update(id: string, data: Partial<Comment>): Promise<Comment | null> {
     await this.repository.update(id, data);
     return this.findById(id)!;
   }

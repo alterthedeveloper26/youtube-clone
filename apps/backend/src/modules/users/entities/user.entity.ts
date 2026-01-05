@@ -4,17 +4,17 @@ import { Channel } from '../../channels/entities/channel.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   @Index()
   clerkId: string;
 
-  @Column({ length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   username: string;
 
-  @Column({ length: 255 })
+  @Column({ type: 'varchar', length: 255 })
   email: string;
 
-  @Column({ nullable: true, length: 500 })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   avatarUrl: string | null;
 
   @Column({ type: 'text', nullable: true })

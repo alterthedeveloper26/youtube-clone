@@ -16,7 +16,7 @@ export class CommentRepliesRepository {
 
   async findByCommentId(commentId: string): Promise<CommentReply[]> {
     return this.repository.find({
-      where: { commentId, deletedAt: null },
+      where: { commentId, deletedAt: undefined },
       relations: ['user'],
       order: { createdAt: 'ASC' },
     });

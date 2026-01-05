@@ -35,7 +35,11 @@ export class CommentsService {
     return comment;
   }
 
-  async update(id: string, content: string, userId: string): Promise<Comment> {
+  async update(
+    id: string,
+    content: string,
+    userId: string,
+  ): Promise<Comment | null> {
     const comment = await this.findById(id);
     if (comment.userId !== userId) {
       throw new NotFoundException('Comment not found');

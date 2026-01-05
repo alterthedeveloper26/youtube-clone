@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import {
   MediaConvertClient,
   CreateJobCommand,
+  CreateJobCommandInput,
 } from '@aws-sdk/client-mediaconvert';
 import {
   mediaConvertClient,
@@ -25,7 +26,7 @@ export class VideoTranscodingService {
     const outputPath = `s3://${AWS_CONFIG.S3_BUCKET}/${outputKey}`;
 
     // HLS job settings - Only 720p quality
-    const jobSettings = {
+    const jobSettings: CreateJobCommandInput = {
       Role: AWS_CONFIG.MEDIACONVERT_ROLE,
       Settings: {
         Inputs: [
@@ -49,14 +50,14 @@ export class VideoTranscodingService {
               {
                 NameModifier: '_720p',
                 VideoDescription: {
+                  Width: 1280,
+                  Height: 720,
                   CodecSettings: {
                     Codec: 'H_264',
                     H264Settings: {
                       Bitrate: 2500000, // 2.5 Mbps
                       MaxBitrate: 3000000, // 3 Mbps max
                       RateControlMode: 'VBR',
-                      Width: 1280,
-                      Height: 720,
                     },
                   },
                 },

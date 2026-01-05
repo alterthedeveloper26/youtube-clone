@@ -6,7 +6,7 @@ import { Video } from '../../videos/entities/video.entity';
 @Entity('playlist_items')
 @Unique(['playlistId', 'videoId'])
 export class PlaylistItem extends BaseEntity {
-  @Column()
+  @Column({ type: 'uuid' })
   @Index()
   playlistId: string;
 
@@ -14,7 +14,7 @@ export class PlaylistItem extends BaseEntity {
   @JoinColumn({ name: 'playlistId' })
   playlist: Playlist;
 
-  @Column()
+  @Column({ type: 'uuid' })
   @Index()
   videoId: string;
 

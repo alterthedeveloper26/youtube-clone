@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev:all": "concurrently \"yarn dev:webhook\" \"yarn dev\"",
     "dev": "next dev",
+    "dev:webhook": "ngrok http 3000",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -28,6 +30,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.2.1",
     "eslint": "^9",
     "eslint-config-next": "16.0.10",
     "shadcn": "^3.6.1",

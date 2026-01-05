@@ -11,8 +11,11 @@ export const getDatabaseConfig = (
   password: configService.get<string>('DB_PASSWORD') || 'postgres',
   database: configService.get<string>('DB_NAME') || 'youtube_clone',
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-  synchronize: configService.get<string>('NODE_ENV') !== 'production', // Auto-sync in dev
+  migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
+  synchronize: configService.get<string>('NODE_ENV') === 'development', // Auto-sync in dev only, use migrations in production
   logging: configService.get<string>('NODE_ENV') === 'development',
-  ssl: configService.get<string>('DB_SSL') === 'true' ? { rejectUnauthorized: false } : false,
+  ssl:
+    configService.get<string>('DB_SSL') === 'true'
+      ? { rejectUnauthorized: false }
+      : false,
 });
-

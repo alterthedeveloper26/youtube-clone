@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, IsNull } from 'typeorm';
 import { Video } from '../entities/video.entity';
 import { VideoDomain } from '../domain/video.domain';
 import { VideoMapper } from '../domain/mappers/video.mapper';
@@ -18,13 +18,13 @@ export class VideosRepository {
   async create(domain: VideoDomain): Promise<VideoDomain> {
     // Convert domain entity to persistence data
     const data = VideoMapper.toPersistence(domain);
-    
+
     // Create TypeORM entity instance
     const entity = this.repository.create(data);
-    
+
     // Save to database
     const saved = await this.repository.save(entity);
-    
+
     // Convert back to domain entity
     return VideoMapper.toDomain(saved);
   }
@@ -34,7 +34,7 @@ export class VideosRepository {
       where: { id, deletedAt: IsNull() },
       relations: ['channel', 'channel.user', 'categories', 'tags'],
     });
-    
+
     return entity ? VideoMapper.toDomain(entity) : null;
   }
 
@@ -52,7 +52,7 @@ export class VideosRepository {
       take,
       order: orderBy || { createdAt: 'DESC' },
     });
-    
+
     return VideoMapper.toDomainList(entities);
   }
 
@@ -68,10 +68,10 @@ export class VideosRepository {
   async update(domain: VideoDomain): Promise<VideoDomain> {
     // Convert domain to persistence data
     const data = VideoMapper.toPersistence(domain);
-    
+
     // Update in database
     await this.repository.update(domain.getId(), data);
-    
+
     // Fetch updated entity
     const updated = await this.findById(domain.getId());
     if (!updated) {
@@ -92,10 +92,10 @@ export class VideosRepository {
     if (!domain) {
       throw new Error('Video not found');
     }
-    
+
     // Use domain method
     domain.incrementView();
-    
+
     // Save updated domain
     await this.update(domain);
   }
@@ -108,10 +108,10 @@ export class VideosRepository {
     if (!domain) {
       throw new Error('Video not found');
     }
-    
+
     // Use domain method (includes business rule check)
     domain.incrementLike();
-    
+
     // Save updated domain
     await this.update(domain);
   }
@@ -124,10 +124,10 @@ export class VideosRepository {
     if (!domain) {
       throw new Error('Video not found');
     }
-    
+
     // Use domain method
     domain.decrementLike();
-    
+
     // Save updated domain
     await this.update(domain);
   }
@@ -140,10 +140,10 @@ export class VideosRepository {
     if (!domain) {
       throw new Error('Video not found');
     }
-    
+
     // Use domain method (includes business rule check)
     domain.incrementDislike();
-    
+
     // Save updated domain
     await this.update(domain);
   }
@@ -156,10 +156,10 @@ export class VideosRepository {
     if (!domain) {
       throw new Error('Video not found');
     }
-    
+
     // Use domain method
     domain.decrementDislike();
-    
+
     // Save updated domain
     await this.update(domain);
   }
@@ -172,12 +172,11 @@ export class VideosRepository {
     if (!domain) {
       throw new Error('Video not found');
     }
-    
+
     // Use domain method
     domain.incrementComment();
-    
+
     // Save updated domain
     await this.update(domain);
   }
 }
-

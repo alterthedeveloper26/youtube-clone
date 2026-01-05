@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Playlist } from '../entities/playlist.entity';
 
 @Injectable()
@@ -16,22 +16,22 @@ export class PlaylistsRepository {
 
   async findById(id: string): Promise<Playlist | null> {
     return this.repository.findOne({
-      where: { id, deletedAt: null },
+      where: { id, deletedAt: IsNull() },
       relations: ['user', 'items', 'items.video', 'items.video.channel'],
     });
   }
 
   async findByUserId(userId: string): Promise<Playlist[]> {
     return this.repository.find({
-      where: { userId, deletedAt: null },
+      where: { userId, deletedAt: IsNull() },
       relations: ['items'],
       order: { createdAt: 'DESC' },
     });
   }
 
-  async update(id: string, data: Partial<Playlist>): Promise<Playlist> {
+  async update(id: string, data: Partial<Playlist>): Promise<Playlist | null> {
     await this.repository.update(id, data);
-    return this.findById(id)!;
+    return this.findById(id);
   }
 
   async delete(id: string): Promise<void> {

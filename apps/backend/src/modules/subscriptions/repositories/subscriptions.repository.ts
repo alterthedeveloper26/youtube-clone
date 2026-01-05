@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Subscription } from '../entities/subscription.entity';
 
 @Injectable()
@@ -19,14 +19,14 @@ export class SubscriptionsRepository {
 
   async findBySubscriber(subscriberId: string): Promise<Subscription[]> {
     return this.repository.find({
-      where: { subscriberId, deletedAt: null },
+      where: { subscriberId, deletedAt: IsNull() },
       relations: ['channel', 'channel.user'],
     });
   }
 
   async findByChannel(channelId: string): Promise<Subscription[]> {
     return this.repository.find({
-      where: { channelId, deletedAt: null },
+      where: { channelId, deletedAt: IsNull() },
       relations: ['subscriber'],
     });
   }
@@ -36,7 +36,7 @@ export class SubscriptionsRepository {
     channelId: string,
   ): Promise<Subscription | null> {
     return this.repository.findOne({
-      where: { subscriberId, channelId, deletedAt: null },
+      where: { subscriberId, channelId, deletedAt: IsNull() },
     });
   }
 
