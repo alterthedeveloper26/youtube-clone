@@ -2,20 +2,37 @@
 
 import { Button } from "@/components/ui/button";
 import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
-import { Bell, Plus, UserCircleIcon } from "lucide-react";
+import { Bell, ClapperboardIcon, Plus, UserCircleIcon } from "lucide-react";
+import Link from "next/link";
 
-export const AuthButton = () => {
+interface AuthButtonProps {
+  isStudioAuthButton?: boolean;
+}
+
+export const AuthButton = ({ isStudioAuthButton }: AuthButtonProps) => {
   return (
     <>
       <SignedIn>
-        <Button className="rounded-full bg-light-gray-100 text-black">
-          <Plus className="size-6" />
-          Create
-        </Button>
+        {!isStudioAuthButton && (
+          <Button asChild className="rounded-full bg-light-gray-100 text-black">
+            <Link href="/studio">
+              <Plus className="size-6" />
+              Create
+            </Link>
+          </Button>
+        )}
         <Button className="rounded-full size-10 p-0" variant="ghost">
           <Bell className="size-6" />
         </Button>
-        <UserButton />
+        <UserButton>
+          <UserButton.MenuItems>
+            <UserButton.Link
+              label="Studio"
+              href="/studio"
+              labelIcon={<ClapperboardIcon className="size-3" />}
+            />
+          </UserButton.MenuItems>
+        </UserButton>
       </SignedIn>
       <SignedOut>
         <SignInButton>

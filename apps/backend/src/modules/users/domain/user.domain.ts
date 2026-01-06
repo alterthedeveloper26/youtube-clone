@@ -5,7 +5,9 @@
 export class UserDomain {
   private id: string;
   private clerkId: string;
-  private username: string;
+  private username: string | null;
+  private firstName: string | null;
+  private lastName: string | null;
   private email: string;
   private avatarUrl: string | null;
   private bio: string | null;
@@ -13,10 +15,12 @@ export class UserDomain {
   constructor(
     id: string,
     clerkId: string,
-    username: string,
+    username: string | null,
     email: string,
     avatarUrl?: string | null,
     bio?: string | null,
+    firstName?: string | null,
+    lastName?: string | null,
   ) {
     this.id = id;
     this.setClerkId(clerkId);
@@ -24,6 +28,8 @@ export class UserDomain {
     this.setEmail(email);
     this.avatarUrl = avatarUrl || null;
     this.setBio(bio);
+    this.setFirstName(firstName);
+    this.setLastName(lastName);
   }
 
   // Domain method: Set Clerk ID with validation
@@ -35,9 +41,14 @@ export class UserDomain {
   }
 
   // Domain method: Set username with validation
-  setUsername(username: string): void {
-    if (!username || username.trim().length === 0) {
-      throw new Error('Username is required');
+  setUsername(username: string | null | undefined): void {
+    if (
+      username === null ||
+      username === undefined ||
+      username.trim().length === 0
+    ) {
+      this.username = null;
+      return;
     }
     if (username.trim().length < 3) {
       throw new Error('Username must be at least 3 characters');
@@ -77,6 +88,38 @@ export class UserDomain {
     this.avatarUrl = url;
   }
 
+  // Domain method: Set first name with validation
+  setFirstName(firstName: string | null | undefined): void {
+    if (
+      firstName === null ||
+      firstName === undefined ||
+      firstName.trim().length === 0
+    ) {
+      this.firstName = null;
+      return;
+    }
+    if (firstName.length > 100) {
+      throw new Error('First name cannot exceed 100 characters');
+    }
+    this.firstName = firstName.trim();
+  }
+
+  // Domain method: Set last name with validation
+  setLastName(lastName: string | null | undefined): void {
+    if (
+      lastName === null ||
+      lastName === undefined ||
+      lastName.trim().length === 0
+    ) {
+      this.lastName = null;
+      return;
+    }
+    if (lastName.length > 100) {
+      throw new Error('Last name cannot exceed 100 characters');
+    }
+    this.lastName = lastName.trim();
+  }
+
   // Getters
   getId(): string {
     return this.id;
@@ -86,7 +129,7 @@ export class UserDomain {
     return this.clerkId;
   }
 
-  getUsername(): string {
+  getUsername(): string | null {
     return this.username;
   }
 
@@ -102,17 +145,25 @@ export class UserDomain {
     return this.bio;
   }
 
+  getFirstName(): string | null {
+    return this.firstName;
+  }
+
+  getLastName(): string | null {
+    return this.lastName;
+  }
+
   // Domain method: Validate entire entity
   validate(): void {
     if (!this.clerkId) {
       throw new Error('Clerk ID is required');
     }
-    if (!this.username || this.username.length < 3) {
-      throw new Error('Username is invalid');
+    // Username is optional, but if provided, must be valid
+    if (this.username !== null && this.username.length < 3) {
+      throw new Error('Username must be at least 3 characters if provided');
     }
     if (!this.email) {
       throw new Error('Email is required');
     }
   }
 }
-

@@ -16,6 +16,8 @@ export class UserMapper {
       entity.email,
       entity.avatarUrl,
       entity.bio,
+      entity.firstName,
+      entity.lastName,
     );
   }
 
@@ -27,6 +29,8 @@ export class UserMapper {
       id: domain.getId(),
       clerkId: domain.getClerkId(),
       username: domain.getUsername(),
+      firstName: domain.getFirstName(),
+      lastName: domain.getLastName(),
       email: domain.getEmail(),
       avatarUrl: domain.getAvatarUrl(),
       bio: domain.getBio(),

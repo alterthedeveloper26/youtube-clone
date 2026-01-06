@@ -5,16 +5,20 @@ class UserDomain {
     id;
     clerkId;
     username;
+    firstName;
+    lastName;
     email;
     avatarUrl;
     bio;
-    constructor(id, clerkId, username, email, avatarUrl, bio) {
+    constructor(id, clerkId, username, email, avatarUrl, bio, firstName, lastName) {
         this.id = id;
         this.setClerkId(clerkId);
         this.setUsername(username);
         this.setEmail(email);
         this.avatarUrl = avatarUrl || null;
         this.setBio(bio);
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
     }
     setClerkId(clerkId) {
         if (!clerkId || clerkId.trim().length === 0) {
@@ -23,8 +27,11 @@ class UserDomain {
         this.clerkId = clerkId.trim();
     }
     setUsername(username) {
-        if (!username || username.trim().length === 0) {
-            throw new Error('Username is required');
+        if (username === null ||
+            username === undefined ||
+            username.trim().length === 0) {
+            this.username = null;
+            return;
         }
         if (username.trim().length < 3) {
             throw new Error('Username must be at least 3 characters');
@@ -56,6 +63,30 @@ class UserDomain {
         }
         this.avatarUrl = url;
     }
+    setFirstName(firstName) {
+        if (firstName === null ||
+            firstName === undefined ||
+            firstName.trim().length === 0) {
+            this.firstName = null;
+            return;
+        }
+        if (firstName.length > 100) {
+            throw new Error('First name cannot exceed 100 characters');
+        }
+        this.firstName = firstName.trim();
+    }
+    setLastName(lastName) {
+        if (lastName === null ||
+            lastName === undefined ||
+            lastName.trim().length === 0) {
+            this.lastName = null;
+            return;
+        }
+        if (lastName.length > 100) {
+            throw new Error('Last name cannot exceed 100 characters');
+        }
+        this.lastName = lastName.trim();
+    }
     getId() {
         return this.id;
     }
@@ -74,12 +105,18 @@ class UserDomain {
     getBio() {
         return this.bio;
     }
+    getFirstName() {
+        return this.firstName;
+    }
+    getLastName() {
+        return this.lastName;
+    }
     validate() {
         if (!this.clerkId) {
             throw new Error('Clerk ID is required');
         }
-        if (!this.username || this.username.length < 3) {
-            throw new Error('Username is invalid');
+        if (this.username !== null && this.username.length < 3) {
+            throw new Error('Username must be at least 3 characters if provided');
         }
         if (!this.email) {
             throw new Error('Email is required');

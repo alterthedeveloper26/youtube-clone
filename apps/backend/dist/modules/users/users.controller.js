@@ -15,7 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("./users.service");
-const create_user_dto_1 = require("./dto/create-user.dto");
+const create_user_dto_1 = require("./dto/request/create-user.dto");
+const update_user_dto_1 = require("./dto/request/update-user.dto");
+const user_response_dto_1 = require("./dto/response/user-response.dto");
 let UsersController = class UsersController {
     usersService;
     constructor(usersService) {
@@ -24,24 +26,31 @@ let UsersController = class UsersController {
     async create(createUserDto) {
         const user = await this.usersService.create({
             clerkId: createUserDto.clerkId,
-            username: createUserDto.username || '',
+            username: createUserDto.username || null,
             email: createUserDto.email || '',
             avatarUrl: createUserDto.avatarUrl,
+            firstName: createUserDto.firstName || null,
+            lastName: createUserDto.lastName || null,
         });
-        return {
-            id: user.getId(),
-            clerkId: user.getClerkId(),
-            username: user.getUsername(),
-            email: user.getEmail(),
-            avatarUrl: user.getAvatarUrl(),
-            bio: user.getBio(),
-        };
+        return user_response_dto_1.UserResponseDto.fromDomain(user);
+    }
+    async findByClerkId(clerkId) {
+        const user = await this.usersService.findByClerkId(clerkId);
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        return user_response_dto_1.UserResponseDto.fromDomain(user);
     }
     async findOne(id) {
-        return this.usersService.findById(id);
+        const user = await this.usersService.findById(id);
+        return user_response_dto_1.UserResponseDto.fromDomain(user);
     }
-    async update(id, data) {
-        return this.usersService.update(id, data);
+    async update(id, updateUserDto) {
+        const user = await this.usersService.update(id, updateUserDto);
+        return user_response_dto_1.UserResponseDto.fromDomain(user);
+    }
+    async deleteByClerkId(clerkId) {
+        await this.usersService.deleteByClerkId(clerkId);
     }
 };
 exports.UsersController = UsersController;
@@ -54,6 +63,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "create", null);
 __decorate([
+    (0, common_1.Get)('clerk/:clerkId'),
+    __param(0, (0, common_1.Param)('clerkId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "findByClerkId", null);
+__decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -65,9 +81,17 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)('clerk/:clerkId'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),
+    __param(0, (0, common_1.Param)('clerkId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "deleteByClerkId", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

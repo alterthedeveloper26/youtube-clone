@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { User } from '../entities/user.entity';
@@ -14,8 +14,21 @@ export class UsersRepository {
 
   /**
    * Create user from domain entity
+   * Checks for email uniqueness, ignoring soft-deleted records
    */
   async create(domain: UserDomain): Promise<UserDomain> {
+    // Check if email already exists in non-deleted records
+    const existingUser = await this.repository.findOne({
+      where: {
+        email: domain.getEmail(),
+        deletedAt: IsNull(), // Only check non-deleted records
+      },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('User with this email already exists');
+    }
+
     const data = UserMapper.toPersistence(domain);
     const entity = this.repository.create(data);
     const saved = await this.repository.save(entity);
@@ -53,5 +66,9 @@ export class UsersRepository {
 
   async delete(id: string): Promise<void> {
     await this.repository.softDelete(id);
+  }
+
+  async deleteByClerkId(clerkId: string): Promise<void> {
+    await this.repository.softDelete({ clerkId });
   }
 }

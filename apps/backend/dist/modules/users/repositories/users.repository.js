@@ -24,6 +24,15 @@ let UsersRepository = class UsersRepository {
         this.repository = repository;
     }
     async create(domain) {
+        const existingUser = await this.repository.findOne({
+            where: {
+                email: domain.getEmail(),
+                deletedAt: (0, typeorm_2.IsNull)(),
+            },
+        });
+        if (existingUser) {
+            throw new common_1.ConflictException('User with this email already exists');
+        }
         const data = user_mapper_1.UserMapper.toPersistence(domain);
         const entity = this.repository.create(data);
         const saved = await this.repository.save(entity);
@@ -54,6 +63,9 @@ let UsersRepository = class UsersRepository {
     }
     async delete(id) {
         await this.repository.softDelete(id);
+    }
+    async deleteByClerkId(clerkId) {
+        await this.repository.softDelete({ clerkId });
     }
 };
 exports.UsersRepository = UsersRepository;

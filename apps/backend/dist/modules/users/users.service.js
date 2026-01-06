@@ -20,7 +20,7 @@ let UsersService = class UsersService {
         this.usersRepository = usersRepository;
     }
     async create(data) {
-        const userDomain = new user_domain_1.UserDomain((0, uuid_1.v4)(), data.clerkId, data.username, data.email, data.avatarUrl);
+        const userDomain = new user_domain_1.UserDomain((0, uuid_1.v4)(), data.clerkId, data.username || null, data.email, data.avatarUrl, undefined, data.firstName || null, data.lastName || null);
         userDomain.validate();
         return this.usersRepository.create(userDomain);
     }
@@ -34,10 +34,23 @@ let UsersService = class UsersService {
     async findByClerkId(clerkId) {
         return this.usersRepository.findByClerkId(clerkId);
     }
+    async deleteByClerkId(clerkId) {
+        const user = await this.findByClerkId(clerkId);
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        await this.usersRepository.deleteByClerkId(clerkId);
+    }
     async update(id, data) {
         const user = await this.findById(id);
-        if (data.username) {
+        if (data.username !== undefined) {
             user.setUsername(data.username);
+        }
+        if (data.firstName !== undefined) {
+            user.setFirstName(data.firstName);
+        }
+        if (data.lastName !== undefined) {
+            user.setLastName(data.lastName);
         }
         if (data.email) {
             user.setEmail(data.email);

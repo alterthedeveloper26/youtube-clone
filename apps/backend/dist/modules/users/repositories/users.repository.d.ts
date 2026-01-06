@@ -9,4 +9,5 @@ export declare class UsersRepository {
     findByClerkId(clerkId: string): Promise<UserDomain | null>;
     update(domain: UserDomain): Promise<UserDomain>;
     delete(id: string): Promise<void>;
+    deleteByClerkId(clerkId: string): Promise<void>;
 }

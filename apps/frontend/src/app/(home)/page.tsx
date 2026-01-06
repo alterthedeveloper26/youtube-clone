@@ -1,7 +1,7 @@
-import React from "react";
+import { HomeView } from "@/modules/home/ui/views/home-view";
 
-const Page = () => {
-  return <div>This is home page</div>;
+const Page = async () => {
+  return <HomeView />;
 };
 
 export default Page;

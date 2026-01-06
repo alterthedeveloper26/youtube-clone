@@ -9,8 +9,28 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   // Enable CORS for frontend
+  const allowedOrigins = [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'http://localhost:3000',
+    // Add ngrok URL from environment variable or use default
+    process.env.NGROK_URL ||
+      'https://genitival-paleoentomologic-adalberto.ngrok-free.dev',
+  ].filter(Boolean); // Remove any undefined values
+
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3001',
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   });
 

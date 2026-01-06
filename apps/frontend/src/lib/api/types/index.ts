@@ -10,6 +10,9 @@ export type {
   UserResponse,
 } from "./users.types";
 
+// Category types
+export type { CategoryResponse } from "./categories.types";
+
 // Add more type exports here as you create new API resources:
 // export type { VideoRequest, VideoResponse } from "./videos.types";
 // export type { ChannelRequest, ChannelResponse } from "./channels.types";

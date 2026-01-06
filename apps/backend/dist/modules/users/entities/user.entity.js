@@ -16,6 +16,8 @@ const channel_entity_1 = require("../../channels/entities/channel.entity");
 let User = class User extends base_entity_1.BaseEntity {
     clerkId;
     username;
+    firstName;
+    lastName;
     email;
     avatarUrl;
     bio;
@@ -28,9 +30,17 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "clerkId", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', length: 100 }),
-    __metadata("design:type", String)
+    (0, typeorm_1.Column)({ type: 'varchar', length: 100, nullable: true }),
+    __metadata("design:type", Object)
 ], User.prototype, "username", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', length: 100, nullable: true }),
+    __metadata("design:type", Object)
+], User.prototype, "firstName", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', length: 100, nullable: true }),
+    __metadata("design:type", Object)
+], User.prototype, "lastName", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', length: 255 }),
     __metadata("design:type", String)

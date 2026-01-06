@@ -6,4 +6,5 @@
 export * from "./config";
 export * from "./types";
 export * from "./users.api";
+export * from "./categories.api";
 

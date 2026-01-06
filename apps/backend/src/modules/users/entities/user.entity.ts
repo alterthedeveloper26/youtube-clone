@@ -8,8 +8,14 @@ export class User extends BaseEntity {
   @Index()
   clerkId: string;
 
-  @Column({ type: 'varchar', length: 100 })
-  username: string;
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  username: string | null;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  firstName: string | null;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  lastName: string | null;
 
   @Column({ type: 'varchar', length: 255 })
   email: string;
@@ -23,4 +29,3 @@ export class User extends BaseEntity {
   @OneToOne(() => Channel, (channel) => channel.user)
   channel: Channel;
 }
-

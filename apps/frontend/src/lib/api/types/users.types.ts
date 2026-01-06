@@ -5,13 +5,17 @@
 
 export interface CreateUserRequest {
   clerkId: string;
-  username: string;
+  username: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
   email: string;
   avatarUrl?: string | null;
 }
 
 export interface UpdateUserRequest {
   username?: string;
+  firstName?: string | null;
+  lastName?: string | null;
   email?: string;
   avatarUrl?: string | null;
   bio?: string;
@@ -20,7 +24,9 @@ export interface UpdateUserRequest {
 export interface UserResponse {
   id: string;
   clerkId: string;
-  username: string;
+  username: string | null;
+  firstName: string | null;
+  lastName: string | null;
   email: string;
   avatarUrl: string | null;
   bio: string | null;
