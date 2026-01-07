@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelDomain = void 0;
+const base_domain_1 = require("../../../shared/domain/base.domain");
 const url_types_1 = require("./types/url.types");
-class ChannelDomain {
-    id;
+class ChannelDomain extends base_domain_1.BaseDomain {
     userId;
     name;
     handle;
@@ -11,8 +11,8 @@ class ChannelDomain {
     bannerUrl;
     avatarUrl;
     subscriberCount;
-    constructor(id, userId, name, handle, description, bannerUrl, avatarUrl, subscriberCount = 0) {
-        this.id = id;
+    constructor(id, userId, name, handle, description, bannerUrl, avatarUrl, subscriberCount = 0, createdAt = new Date(), updatedAt = new Date(), deletedAt = null) {
+        super(id, createdAt, updatedAt, deletedAt);
         this.userId = userId;
         this.setName(name);
         this.setHandle(handle);
@@ -82,9 +82,6 @@ class ChannelDomain {
         if (this.subscriberCount > 0) {
             this.subscriberCount -= 1;
         }
-    }
-    getId() {
-        return this.id;
     }
     getUserId() {
         return this.userId;

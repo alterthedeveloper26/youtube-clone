@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const videos_service_1 = require("./videos.service");
 const request_upload_url_dto_1 = require("./dto/request-upload-url.dto");
 const complete_upload_dto_1 = require("./dto/complete-upload.dto");
+const get_videos_query_dto_1 = require("./dto/get-videos-query.dto");
 let VideosController = class VideosController {
     videosService;
     constructor(videosService) {
@@ -57,7 +58,7 @@ __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [get_videos_query_dto_1.GetVideosQueryDto]),
     __metadata("design:returntype", Promise)
 ], VideosController.prototype, "findAll", null);
 __decorate([

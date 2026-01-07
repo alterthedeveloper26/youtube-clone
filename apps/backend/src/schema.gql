@@ -1,0 +1,53 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input GetVideosInput {
+  channelId: String
+  limit: Int
+  page: Int
+  search: String
+}
+
+type Query {
+  videos(input: GetVideosInput): VideosListResponse!
+}
+
+type Video {
+  channelId: String!
+  commentCount: Int!
+  createdAt: DateTime!
+  deletedAt: DateTime
+  description: String
+  dislikeCount: Int!
+  duration: Int!
+  hls720pUrl: String
+  id: String!
+  isPublished: Boolean!
+  likeCount: Int!
+  processingStatus: String!
+  thumbnailUrl: String
+  title: String!
+  updatedAt: DateTime!
+  videoKey: String
+  videoUrl: String!
+  viewCount: Int!
+  visibility: String!
+}
+
+type VideosListResponse {
+  data: [Video!]!
+  meta: VideosMeta!
+}
+
+type VideosMeta {
+  limit: Int!
+  page: Int!
+  total: Int!
+  totalPages: Int!
+}

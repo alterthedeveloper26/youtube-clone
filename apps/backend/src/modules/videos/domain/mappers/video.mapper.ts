@@ -1,8 +1,16 @@
 /**
  * Mapper: Converts between Video Domain Entity and TypeORM Entity
  */
-import { Video as VideoEntity, VideoVisibility, ProcessingStatus } from '../../entities/video.entity';
-import { VideoDomain, VideoVisibility as DomainVisibility, ProcessingStatus as DomainProcessingStatus } from '../video.domain';
+import {
+  Video as VideoEntity,
+  VideoVisibility,
+  ProcessingStatus,
+} from '../../entities/video.entity';
+import {
+  VideoDomain,
+  VideoVisibility as DomainVisibility,
+  ProcessingStatus as DomainProcessingStatus,
+} from '../video.domain';
 
 export class VideoMapper {
   /**
@@ -26,14 +34,19 @@ export class VideoMapper {
       entity.isPublished,
       this.mapVisibilityToDomain(entity.visibility),
       this.mapProcessingStatusToDomain(entity.processingStatus),
+      entity.createdAt,
+      entity.updatedAt,
+      entity.deletedAt,
     );
   }
 
   /**
    * Convert Domain entity to TypeORM entity data
+   * Note: id, createdAt, updatedAt, deletedAt are managed by database
    */
   static toPersistence(domain: VideoDomain): Partial<VideoEntity> {
     return {
+      // id is included for updates, but createdAt/updatedAt/deletedAt are managed by DB
       id: domain.getId(),
       channelId: domain.getChannelId(),
       title: domain.getTitle(),
@@ -49,7 +62,10 @@ export class VideoMapper {
       commentCount: domain.getCommentCount(),
       isPublished: domain.getIsPublished(),
       visibility: this.mapVisibilityToEntity(domain.getVisibility()),
-      processingStatus: this.mapProcessingStatusToEntity(domain.getProcessingStatus()),
+      processingStatus: this.mapProcessingStatusToEntity(
+        domain.getProcessingStatus(),
+      ),
+      // createdAt, updatedAt, deletedAt are NOT included - managed by database
     };
   }
 
@@ -84,4 +100,3 @@ export class VideoMapper {
     return status as ProcessingStatus;
   }
 }
-

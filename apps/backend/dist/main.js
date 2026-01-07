@@ -16,10 +16,14 @@ async function bootstrap() {
         origin: (origin, callback) => {
             if (!origin)
                 return callback(null, true);
+            if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+                return callback(null, true);
+            }
             if (allowedOrigins.includes(origin)) {
                 callback(null, true);
             }
             else {
+                console.warn(`CORS blocked origin: ${origin}`);
                 callback(new Error('Not allowed by CORS'));
             }
         },

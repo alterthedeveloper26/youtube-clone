@@ -1,6 +1,6 @@
+import { BaseDomain } from '../../../shared/domain/base.domain';
 import { BannerUrl, AvatarUrl } from './types/url.types';
-export declare class ChannelDomain {
-    private id;
+export declare class ChannelDomain extends BaseDomain {
     private userId;
     private name;
     private handle;
@@ -8,7 +8,7 @@ export declare class ChannelDomain {
     private bannerUrl;
     private avatarUrl;
     private subscriberCount;
-    constructor(id: string, userId: string, name: string, handle: string, description?: string | null, bannerUrl?: string | null, avatarUrl?: string | null, subscriberCount?: number);
+    constructor(id: string, userId: string, name: string, handle: string, description?: string | null, bannerUrl?: string | null, avatarUrl?: string | null, subscriberCount?: number, createdAt?: Date, updatedAt?: Date, deletedAt?: Date | null);
     setName(name: string): void;
     setHandle(handle: string): void;
     static normalizeHandle(handle: string): string;
@@ -17,7 +17,6 @@ export declare class ChannelDomain {
     canBeDeleted(): boolean;
     incrementSubscriberCount(): void;
     decrementSubscriberCount(): void;
-    getId(): string;
     getUserId(): string;
     getName(): string;
     getHandle(): string;

@@ -65,3 +65,49 @@ export async function apiRequest<T>(
   return response.text() as unknown as T;
 }
 
+/**
+ * GraphQL request helper
+ */
+export async function graphqlRequest<T>(
+  query: string,
+  variables?: Record<string, unknown>,
+): Promise<T> {
+  const url = `${API_CONFIG.baseURL}/graphql`;
+  
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      ...getDefaultHeaders(),
+    },
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => response.statusText);
+    throw new ApiError(
+      response.status,
+      response.statusText,
+      errorText || `GraphQL request failed: ${response.status}`,
+    );
+  }
+
+  const result = await response.json();
+
+  // Check for GraphQL errors
+  if (result.errors) {
+    const errorMessage = result.errors
+      .map((err: { message: string }) => err.message)
+      .join(", ");
+    throw new ApiError(
+      response.status,
+      "GraphQL Error",
+      errorMessage,
+    );
+  }
+
+  return result.data as T;
+}
+

@@ -21,4 +21,10 @@ export declare class VideosRepository {
     incrementDislikeCount(id: string): Promise<void>;
     decrementDislikeCount(id: string): Promise<void>;
     incrementCommentCount(id: string): Promise<void>;
+    findEntities(options: {
+        where?: any;
+        skip?: number;
+        take?: number;
+        orderBy?: any;
+    }): Promise<Video[]>;
 }

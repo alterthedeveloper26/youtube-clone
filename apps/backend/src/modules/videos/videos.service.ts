@@ -60,8 +60,9 @@ export class VideosService {
     const streamingUrls = this.videoStorageService.getStreamingUrls(videoKey);
 
     // Create domain entity (business rules applied in constructor)
+    // Note: id and timestamps will be set by database when saved
     const videoDomain = new VideoDomain(
-      videoId,
+      videoId, // id - will be set by DB
       channel.getId(),
       title,
       streamingUrls.original,
@@ -77,6 +78,7 @@ export class VideosService {
       false, // isPublished
       VideoVisibility.PUBLIC, // visibility (using enum from domain)
       ProcessingStatus.PROCESSING,
+      // Timestamps not passed - will be set by database
     );
 
     // Validate domain entity

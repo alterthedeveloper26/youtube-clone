@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { AuthButton } from "@/modules/auth/ui/components/auth-button";
+import { StudioUploadModal } from "../studio-upload-modal";
 
 export const StudioNavbar = () => {
   const [isLogin, setIsLogin] = useState(false);
@@ -31,6 +32,7 @@ export const StudioNavbar = () => {
         <div className="flex-1"></div>
 
         <div className="flex items-center justify-center gap-3">
+          <StudioUploadModal />
           <AuthButton isStudioAuthButton={true} />
         </div>
       </div>

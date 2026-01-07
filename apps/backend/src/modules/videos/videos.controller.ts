@@ -12,6 +12,7 @@ import {
 import { VideosService } from './videos.service';
 import { RequestUploadUrlDto } from './dto/request-upload-url.dto';
 import { CompleteUploadDto } from './dto/complete-upload.dto';
+import { GetVideosQueryDto } from './dto/get-videos-query.dto';
 // TODO: Uncomment when auth is set up
 // import { AuthGuard } from '../../common/guards/auth.guard';
 // import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -55,7 +56,7 @@ export class VideosController {
    * Get all videos with pagination
    */
   @Get()
-  async findAll(@Query() query: any) {
+  async findAll(@Query() query: GetVideosQueryDto) {
     return this.videosService.findAll(query);
   }
 
@@ -67,4 +68,3 @@ export class VideosController {
     return this.videosService.findOne(id);
   }
 }
-

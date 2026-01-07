@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserDomain = void 0;
-class UserDomain {
-    id;
+const base_domain_1 = require("../../../shared/domain/base.domain");
+class UserDomain extends base_domain_1.BaseDomain {
     clerkId;
     username;
     firstName;
@@ -10,8 +10,8 @@ class UserDomain {
     email;
     avatarUrl;
     bio;
-    constructor(id, clerkId, username, email, avatarUrl, bio, firstName, lastName) {
-        this.id = id;
+    constructor(id, clerkId, username, email, avatarUrl, bio, firstName, lastName, createdAt = new Date(), updatedAt = new Date(), deletedAt = null) {
+        super(id, createdAt, updatedAt, deletedAt);
         this.setClerkId(clerkId);
         this.setUsername(username);
         this.setEmail(email);
@@ -86,9 +86,6 @@ class UserDomain {
             throw new Error('Last name cannot exceed 100 characters');
         }
         this.lastName = lastName.trim();
-    }
-    getId() {
-        return this.id;
     }
     getClerkId() {
         return this.clerkId;

@@ -2,8 +2,9 @@
  * Domain Entity - User
  * Pure business logic, no database concerns
  */
-export class UserDomain {
-  private id: string;
+import { BaseDomain } from '../../../shared/domain/base.domain';
+
+export class UserDomain extends BaseDomain {
   private clerkId: string;
   private username: string | null;
   private firstName: string | null;
@@ -21,8 +22,11 @@ export class UserDomain {
     bio?: string | null,
     firstName?: string | null,
     lastName?: string | null,
+    createdAt: Date = new Date(),
+    updatedAt: Date = new Date(),
+    deletedAt: Date | null = null,
   ) {
-    this.id = id;
+    super(id, createdAt, updatedAt, deletedAt);
     this.setClerkId(clerkId);
     this.setUsername(username);
     this.setEmail(email);
@@ -38,6 +42,7 @@ export class UserDomain {
       throw new Error('Clerk ID is required');
     }
     this.clerkId = clerkId.trim();
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Set username with validation
@@ -48,6 +53,7 @@ export class UserDomain {
       username.trim().length === 0
     ) {
       this.username = null;
+      // Note: updatedAt is managed by database
       return;
     }
     if (username.trim().length < 3) {
@@ -57,6 +63,7 @@ export class UserDomain {
       throw new Error('Username cannot exceed 100 characters');
     }
     this.username = username.trim();
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Set email with validation
@@ -70,6 +77,7 @@ export class UserDomain {
       throw new Error('Invalid email format');
     }
     this.email = email.toLowerCase().trim();
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Set bio with validation
@@ -78,6 +86,7 @@ export class UserDomain {
       throw new Error('Bio cannot exceed 500 characters');
     }
     this.bio = bio || null;
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Set avatar URL
@@ -86,6 +95,7 @@ export class UserDomain {
       throw new Error('Avatar URL cannot exceed 500 characters');
     }
     this.avatarUrl = url;
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Set first name with validation
@@ -96,12 +106,14 @@ export class UserDomain {
       firstName.trim().length === 0
     ) {
       this.firstName = null;
+      // Note: updatedAt is managed by database
       return;
     }
     if (firstName.length > 100) {
       throw new Error('First name cannot exceed 100 characters');
     }
     this.firstName = firstName.trim();
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Set last name with validation
@@ -112,18 +124,17 @@ export class UserDomain {
       lastName.trim().length === 0
     ) {
       this.lastName = null;
+      // Note: updatedAt is managed by database
       return;
     }
     if (lastName.length > 100) {
       throw new Error('Last name cannot exceed 100 characters');
     }
     this.lastName = lastName.trim();
+    // Note: updatedAt is managed by database
   }
 
   // Getters
-  getId(): string {
-    return this.id;
-  }
 
   getClerkId(): string {
     return this.clerkId;

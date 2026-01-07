@@ -18,14 +18,19 @@ export class UserMapper {
       entity.bio,
       entity.firstName,
       entity.lastName,
+      entity.createdAt,
+      entity.updatedAt,
+      entity.deletedAt,
     );
   }
 
   /**
    * Convert Domain entity to TypeORM entity data
+   * Note: id, createdAt, updatedAt, deletedAt are managed by database
    */
   static toPersistence(domain: UserDomain): Partial<UserEntity> {
     return {
+      // id is included for updates, but createdAt/updatedAt/deletedAt are managed by DB
       id: domain.getId(),
       clerkId: domain.getClerkId(),
       username: domain.getUsername(),
@@ -34,6 +39,7 @@ export class UserMapper {
       email: domain.getEmail(),
       avatarUrl: domain.getAvatarUrl(),
       bio: domain.getBio(),
+      // createdAt, updatedAt, deletedAt are NOT included - managed by database
     };
   }
 
@@ -44,4 +50,3 @@ export class UserMapper {
     return entities.map((entity) => this.toDomain(entity));
   }
 }
-

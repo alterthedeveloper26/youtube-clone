@@ -2,6 +2,8 @@
  * Domain Entity - Video
  * Pure business logic, no database concerns
  */
+import { BaseDomain } from '../../../shared/domain/base.domain';
+
 export enum VideoVisibility {
   PUBLIC = 'public',
   UNLISTED = 'unlisted',
@@ -15,8 +17,7 @@ export enum ProcessingStatus {
   FAILED = 'failed',
 }
 
-export class VideoDomain {
-  private id: string;
+export class VideoDomain extends BaseDomain {
   private channelId: string;
   private title: string;
   private description: string | null;
@@ -50,8 +51,11 @@ export class VideoDomain {
     isPublished: boolean = false,
     visibility: VideoVisibility = VideoVisibility.PUBLIC,
     processingStatus: ProcessingStatus = ProcessingStatus.PENDING,
+    createdAt: Date = new Date(),
+    updatedAt: Date = new Date(),
+    deletedAt: Date | null = null,
   ) {
-    this.id = id;
+    super(id, createdAt, updatedAt, deletedAt);
     this.channelId = channelId;
     this.setTitle(title);
     this.setDescription(description);
@@ -81,6 +85,7 @@ export class VideoDomain {
       throw new Error('Video title cannot exceed 100 characters');
     }
     this.title = title.trim();
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Set description with validation
@@ -89,6 +94,7 @@ export class VideoDomain {
       throw new Error('Video description cannot exceed 5000 characters');
     }
     this.description = description || null;
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Publish video
@@ -100,11 +106,13 @@ export class VideoDomain {
       throw new Error('Video title is too short to publish');
     }
     this.isPublished = true;
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Unpublish video
   unpublish(): void {
     this.isPublished = false;
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Can video be published?
@@ -167,6 +175,7 @@ export class VideoDomain {
     if (status === ProcessingStatus.COMPLETED && this.canBePublished()) {
       this.isPublished = true;
     }
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Set HLS URL
@@ -175,6 +184,7 @@ export class VideoDomain {
     if (this.processingStatus === ProcessingStatus.PROCESSING) {
       this.setProcessingStatus(ProcessingStatus.COMPLETED);
     }
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Set video URL
@@ -186,6 +196,7 @@ export class VideoDomain {
       throw new Error('Video URL cannot exceed 500 characters');
     }
     this.videoUrl = url;
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Set thumbnail URL
@@ -194,12 +205,10 @@ export class VideoDomain {
       throw new Error('Thumbnail URL cannot exceed 500 characters');
     }
     this.thumbnailUrl = url;
+    // Note: updatedAt is managed by database
   }
 
   // Getters
-  getId(): string {
-    return this.id;
-  }
 
   getChannelId(): string {
     return this.channelId;
@@ -261,6 +270,54 @@ export class VideoDomain {
     return this.processingStatus;
   }
 
+  /**
+   * Convert domain entity to GraphQL representation
+   * Returns a plain object matching the GraphQL Video type structure
+   */
+  toGraphQL(): {
+    id: string;
+    channelId: string;
+    title: string;
+    description: string | null;
+    videoUrl: string;
+    videoKey: string | null;
+    hls720pUrl: string | null;
+    thumbnailUrl: string | null;
+    duration: number;
+    viewCount: number;
+    likeCount: number;
+    dislikeCount: number;
+    commentCount: number;
+    isPublished: boolean;
+    visibility: VideoVisibility;
+    processingStatus: ProcessingStatus;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date | null;
+  } {
+    return {
+      id: this.getId(),
+      channelId: this.getChannelId(),
+      title: this.getTitle(),
+      description: this.getDescription(),
+      videoUrl: this.getVideoUrl(),
+      videoKey: this.getVideoKey(),
+      hls720pUrl: this.getHls720pUrl(),
+      thumbnailUrl: this.getThumbnailUrl(),
+      duration: this.getDuration(),
+      viewCount: this.getViewCount(),
+      likeCount: this.getLikeCount(),
+      dislikeCount: this.getDislikeCount(),
+      commentCount: this.getCommentCount(),
+      isPublished: this.getIsPublished(),
+      visibility: this.getVisibility(),
+      processingStatus: this.getProcessingStatus(),
+      createdAt: this.getCreatedAt(),
+      updatedAt: this.getUpdatedAt(),
+      deletedAt: this.getDeletedAt(),
+    };
+  }
+
   // Domain method: Validate entire entity
   validate(): void {
     if (!this.title || this.title.length < 3) {
@@ -274,4 +331,3 @@ export class VideoDomain {
     }
   }
 }
-

@@ -3,6 +3,7 @@
  * No TypeORM decorators, no database concerns
  * Contains business rules and validation
  */
+import { BaseDomain } from '../../../shared/domain/base.domain';
 import {
   BannerUrl,
   AvatarUrl,
@@ -10,8 +11,7 @@ import {
   createAvatarUrl,
 } from './types/url.types';
 
-export class ChannelDomain {
-  private id: string;
+export class ChannelDomain extends BaseDomain {
   private userId: string;
   private name: string;
   private handle: string;
@@ -29,9 +29,12 @@ export class ChannelDomain {
     bannerUrl?: string | null,
     avatarUrl?: string | null,
     subscriberCount: number = 0,
+    createdAt: Date = new Date(),
+    updatedAt: Date = new Date(),
+    deletedAt: Date | null = null,
   ) {
     // Validate and set properties
-    this.id = id;
+    super(id, createdAt, updatedAt, deletedAt);
     this.userId = userId;
     this.setName(name);
     this.setHandle(handle);
@@ -53,6 +56,7 @@ export class ChannelDomain {
       throw new Error('Channel name cannot exceed 100 characters');
     }
     this.name = name.trim();
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Set handle with validation and normalization
@@ -92,6 +96,7 @@ export class ChannelDomain {
     }
 
     this.handle = normalizedHandle;
+    // Note: updatedAt is managed by database
   }
 
   // Static helper: Normalize handle for uniqueness checks (without creating entity)
@@ -112,6 +117,7 @@ export class ChannelDomain {
       throw new Error('Channel description cannot exceed 5000 characters');
     }
     this.description = description;
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Business rule - Can channel be updated?
@@ -130,19 +136,18 @@ export class ChannelDomain {
   // Domain method: Increment subscriber count
   incrementSubscriberCount(): void {
     this.subscriberCount += 1;
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Decrement subscriber count
   decrementSubscriberCount(): void {
     if (this.subscriberCount > 0) {
       this.subscriberCount -= 1;
+      // Note: updatedAt is managed by database
     }
   }
 
   // Getters
-  getId(): string {
-    return this.id;
-  }
 
   getUserId(): string {
     return this.userId;
@@ -175,11 +180,13 @@ export class ChannelDomain {
   // Domain method: Set banner URL
   setBannerUrl(url: string | null): void {
     this.bannerUrl = createBannerUrl(url);
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Set avatar URL
   setAvatarUrl(url: string | null): void {
     this.avatarUrl = createAvatarUrl(url);
+    // Note: updatedAt is managed by database
   }
 
   // Domain method: Validate entire entity

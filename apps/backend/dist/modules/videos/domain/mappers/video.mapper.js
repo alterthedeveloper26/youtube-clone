@@ -4,7 +4,7 @@ exports.VideoMapper = void 0;
 const video_domain_1 = require("../video.domain");
 class VideoMapper {
     static toDomain(entity) {
-        return new video_domain_1.VideoDomain(entity.id, entity.channelId, entity.title, entity.videoUrl, entity.description, entity.videoKey, entity.hls720pUrl, entity.thumbnailUrl, entity.duration, entity.viewCount, entity.likeCount, entity.dislikeCount, entity.commentCount, entity.isPublished, this.mapVisibilityToDomain(entity.visibility), this.mapProcessingStatusToDomain(entity.processingStatus));
+        return new video_domain_1.VideoDomain(entity.id, entity.channelId, entity.title, entity.videoUrl, entity.description, entity.videoKey, entity.hls720pUrl, entity.thumbnailUrl, entity.duration, entity.viewCount, entity.likeCount, entity.dislikeCount, entity.commentCount, entity.isPublished, this.mapVisibilityToDomain(entity.visibility), this.mapProcessingStatusToDomain(entity.processingStatus), entity.createdAt, entity.updatedAt, entity.deletedAt);
     }
     static toPersistence(domain) {
         return {

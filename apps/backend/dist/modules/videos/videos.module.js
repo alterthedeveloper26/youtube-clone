@@ -14,6 +14,7 @@ const videos_service_1 = require("./videos.service");
 const videos_repository_1 = require("./repositories/videos.repository");
 const video_storage_service_1 = require("./services/video-storage.service");
 const video_transcoding_service_1 = require("./services/video-transcoding.service");
+const videos_resolver_1 = require("./graphql/videos.resolver");
 const video_entity_1 = require("./entities/video.entity");
 const aws_module_1 = require("../../shared/aws/aws.module");
 const channels_module_1 = require("../channels/channels.module");
@@ -33,6 +34,7 @@ exports.VideosModule = VideosModule = __decorate([
             videos_repository_1.VideosRepository,
             video_storage_service_1.VideoStorageService,
             video_transcoding_service_1.VideoTranscodingService,
+            videos_resolver_1.VideosResolver,
         ],
         exports: [videos_service_1.VideosService, videos_repository_1.VideosRepository],
     })

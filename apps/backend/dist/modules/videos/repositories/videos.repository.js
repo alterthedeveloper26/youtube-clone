@@ -112,6 +112,16 @@ let VideosRepository = class VideosRepository {
         domain.incrementComment();
         await this.update(domain);
     }
+    async findEntities(options) {
+        const { where = {}, skip, take, orderBy } = options;
+        return this.repository.find({
+            where: { ...where, deletedAt: (0, typeorm_2.IsNull)() },
+            relations: ['channel', 'channel.user'],
+            skip,
+            take,
+            order: orderBy || { createdAt: 'DESC' },
+        });
+    }
 };
 exports.VideosRepository = VideosRepository;
 exports.VideosRepository = VideosRepository = __decorate([

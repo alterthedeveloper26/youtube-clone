@@ -20,11 +20,15 @@ export class ChannelMapper {
       entity.bannerUrl,
       entity.avatarUrl,
       entity.subscriberCount,
+      entity.createdAt,
+      entity.updatedAt,
+      entity.deletedAt,
     );
   }
 
   /**
    * Convert Domain entity to TypeORM entity data
+   * Note: id, createdAt, updatedAt, deletedAt are managed by database
    */
   static toPersistence(domain: ChannelDomain): Partial<ChannelEntity> {
     // Convert branded types back to strings for persistence
@@ -32,6 +36,7 @@ export class ChannelMapper {
     const avatarUrl = domain.getAvatarUrl();
 
     return {
+      // id is included for updates, but createdAt/updatedAt/deletedAt are managed by DB
       id: domain.getId(),
       userId: domain.getUserId(),
       name: domain.getName(),
@@ -40,6 +45,7 @@ export class ChannelMapper {
       bannerUrl: bannerUrl as string | null,
       avatarUrl: avatarUrl as string | null,
       subscriberCount: domain.getSubscriberCount(),
+      // createdAt, updatedAt, deletedAt are NOT included - managed by database
     };
   }
 

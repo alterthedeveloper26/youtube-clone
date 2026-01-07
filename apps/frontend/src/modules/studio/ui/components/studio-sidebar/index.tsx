@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { ArrowBigLeft, VideoIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { StudioSidebarHeader } from "./studio-sidebar-header";
 
 export const StudioSidebar = () => {
   const pathName = usePathname();
@@ -22,6 +23,7 @@ export const StudioSidebar = () => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
+              <StudioSidebarHeader />
               <SidebarMenuItem>
                 <SidebarMenuButton
                   isActive={pathName === "/studio"}

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VideoDomain = exports.ProcessingStatus = exports.VideoVisibility = void 0;
+const base_domain_1 = require("../../../shared/domain/base.domain");
 var VideoVisibility;
 (function (VideoVisibility) {
     VideoVisibility["PUBLIC"] = "public";
@@ -14,8 +15,7 @@ var ProcessingStatus;
     ProcessingStatus["COMPLETED"] = "completed";
     ProcessingStatus["FAILED"] = "failed";
 })(ProcessingStatus || (exports.ProcessingStatus = ProcessingStatus = {}));
-class VideoDomain {
-    id;
+class VideoDomain extends base_domain_1.BaseDomain {
     channelId;
     title;
     description;
@@ -31,8 +31,8 @@ class VideoDomain {
     isPublished;
     visibility;
     processingStatus;
-    constructor(id, channelId, title, videoUrl, description, videoKey, hls720pUrl, thumbnailUrl, duration = 0, viewCount = 0, likeCount = 0, dislikeCount = 0, commentCount = 0, isPublished = false, visibility = VideoVisibility.PUBLIC, processingStatus = ProcessingStatus.PENDING) {
-        this.id = id;
+    constructor(id, channelId, title, videoUrl, description, videoKey, hls720pUrl, thumbnailUrl, duration = 0, viewCount = 0, likeCount = 0, dislikeCount = 0, commentCount = 0, isPublished = false, visibility = VideoVisibility.PUBLIC, processingStatus = ProcessingStatus.PENDING, createdAt = new Date(), updatedAt = new Date(), deletedAt = null) {
+        super(id, createdAt, updatedAt, deletedAt);
         this.channelId = channelId;
         this.setTitle(title);
         this.setDescription(description);
@@ -142,9 +142,6 @@ class VideoDomain {
         }
         this.thumbnailUrl = url;
     }
-    getId() {
-        return this.id;
-    }
     getChannelId() {
         return this.channelId;
     }
@@ -189,6 +186,29 @@ class VideoDomain {
     }
     getProcessingStatus() {
         return this.processingStatus;
+    }
+    toGraphQL() {
+        return {
+            id: this.getId(),
+            channelId: this.getChannelId(),
+            title: this.getTitle(),
+            description: this.getDescription(),
+            videoUrl: this.getVideoUrl(),
+            videoKey: this.getVideoKey(),
+            hls720pUrl: this.getHls720pUrl(),
+            thumbnailUrl: this.getThumbnailUrl(),
+            duration: this.getDuration(),
+            viewCount: this.getViewCount(),
+            likeCount: this.getLikeCount(),
+            dislikeCount: this.getDislikeCount(),
+            commentCount: this.getCommentCount(),
+            isPublished: this.getIsPublished(),
+            visibility: this.getVisibility(),
+            processingStatus: this.getProcessingStatus(),
+            createdAt: this.getCreatedAt(),
+            updatedAt: this.getUpdatedAt(),
+            deletedAt: this.getDeletedAt(),
+        };
     }
     validate() {
         if (!this.title || this.title.length < 3) {

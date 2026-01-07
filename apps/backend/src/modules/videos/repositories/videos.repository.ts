@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, IsNull } from 'typeorm';
+import { Repository, Like, IsNull, In } from 'typeorm';
 import { Video } from '../entities/video.entity';
 import { VideoDomain } from '../domain/video.domain';
 import { VideoMapper } from '../domain/mappers/video.mapper';
@@ -178,5 +178,25 @@ export class VideosRepository {
 
     // Save updated domain
     await this.update(domain);
+  }
+
+  /**
+   * Find entities directly (for GraphQL resolver to access timestamps)
+   * Returns entities instead of domain objects
+   */
+  async findEntities(options: {
+    where?: any;
+    skip?: number;
+    take?: number;
+    orderBy?: any;
+  }): Promise<Video[]> {
+    const { where = {}, skip, take, orderBy } = options;
+    return this.repository.find({
+      where: { ...where, deletedAt: IsNull() },
+      relations: ['channel', 'channel.user'],
+      skip,
+      take,
+      order: orderBy || { createdAt: 'DESC' },
+    });
   }
 }

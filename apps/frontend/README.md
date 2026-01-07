@@ -1,1 +1,1 @@
-Continue from 1:53:09
+Implement graphQL client side

@@ -4,7 +4,7 @@ exports.UserMapper = void 0;
 const user_domain_1 = require("../user.domain");
 class UserMapper {
     static toDomain(entity) {
-        return new user_domain_1.UserDomain(entity.id, entity.clerkId, entity.username, entity.email, entity.avatarUrl, entity.bio, entity.firstName, entity.lastName);
+        return new user_domain_1.UserDomain(entity.id, entity.clerkId, entity.username, entity.email, entity.avatarUrl, entity.bio, entity.firstName, entity.lastName, entity.createdAt, entity.updatedAt, entity.deletedAt);
     }
     static toPersistence(domain) {
         return {

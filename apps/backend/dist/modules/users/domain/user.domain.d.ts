@@ -1,5 +1,5 @@
-export declare class UserDomain {
-    private id;
+import { BaseDomain } from '../../../shared/domain/base.domain';
+export declare class UserDomain extends BaseDomain {
     private clerkId;
     private username;
     private firstName;
@@ -7,7 +7,7 @@ export declare class UserDomain {
     private email;
     private avatarUrl;
     private bio;
-    constructor(id: string, clerkId: string, username: string | null, email: string, avatarUrl?: string | null, bio?: string | null, firstName?: string | null, lastName?: string | null);
+    constructor(id: string, clerkId: string, username: string | null, email: string, avatarUrl?: string | null, bio?: string | null, firstName?: string | null, lastName?: string | null, createdAt?: Date, updatedAt?: Date, deletedAt?: Date | null);
     setClerkId(clerkId: string): void;
     setUsername(username: string | null | undefined): void;
     setEmail(email: string): void;
@@ -15,7 +15,6 @@ export declare class UserDomain {
     setAvatarUrl(url: string | null): void;
     setFirstName(firstName: string | null | undefined): void;
     setLastName(lastName: string | null | undefined): void;
-    getId(): string;
     getClerkId(): string;
     getUsername(): string | null;
     getEmail(): string;

@@ -4,7 +4,7 @@ exports.ChannelMapper = void 0;
 const channel_domain_1 = require("../channel.domain");
 class ChannelMapper {
     static toDomain(entity) {
-        return new channel_domain_1.ChannelDomain(entity.id, entity.userId, entity.name, entity.handle, entity.description, entity.bannerUrl, entity.avatarUrl, entity.subscriberCount);
+        return new channel_domain_1.ChannelDomain(entity.id, entity.userId, entity.name, entity.handle, entity.description, entity.bannerUrl, entity.avatarUrl, entity.subscriberCount, entity.createdAt, entity.updatedAt, entity.deletedAt);
     }
     static toPersistence(domain) {
         const bannerUrl = domain.getBannerUrl();

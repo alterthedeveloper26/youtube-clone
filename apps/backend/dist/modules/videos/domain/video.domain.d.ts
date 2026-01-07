@@ -1,3 +1,4 @@
+import { BaseDomain } from '../../../shared/domain/base.domain';
 export declare enum VideoVisibility {
     PUBLIC = "public",
     UNLISTED = "unlisted",
@@ -9,8 +10,7 @@ export declare enum ProcessingStatus {
     COMPLETED = "completed",
     FAILED = "failed"
 }
-export declare class VideoDomain {
-    private id;
+export declare class VideoDomain extends BaseDomain {
     private channelId;
     private title;
     private description;
@@ -26,7 +26,7 @@ export declare class VideoDomain {
     private isPublished;
     private visibility;
     private processingStatus;
-    constructor(id: string, channelId: string, title: string, videoUrl: string, description?: string | null, videoKey?: string | null, hls720pUrl?: string | null, thumbnailUrl?: string | null, duration?: number, viewCount?: number, likeCount?: number, dislikeCount?: number, commentCount?: number, isPublished?: boolean, visibility?: VideoVisibility, processingStatus?: ProcessingStatus);
+    constructor(id: string, channelId: string, title: string, videoUrl: string, description?: string | null, videoKey?: string | null, hls720pUrl?: string | null, thumbnailUrl?: string | null, duration?: number, viewCount?: number, likeCount?: number, dislikeCount?: number, commentCount?: number, isPublished?: boolean, visibility?: VideoVisibility, processingStatus?: ProcessingStatus, createdAt?: Date, updatedAt?: Date, deletedAt?: Date | null);
     setTitle(title: string): void;
     setDescription(description: string | null | undefined): void;
     publish(): void;
@@ -43,7 +43,6 @@ export declare class VideoDomain {
     setHls720pUrl(url: string): void;
     setVideoUrl(url: string): void;
     setThumbnailUrl(url: string | null): void;
-    getId(): string;
     getChannelId(): string;
     getTitle(): string;
     getDescription(): string | null;
@@ -59,5 +58,26 @@ export declare class VideoDomain {
     getIsPublished(): boolean;
     getVisibility(): VideoVisibility;
     getProcessingStatus(): ProcessingStatus;
+    toGraphQL(): {
+        id: string;
+        channelId: string;
+        title: string;
+        description: string | null;
+        videoUrl: string;
+        videoKey: string | null;
+        hls720pUrl: string | null;
+        thumbnailUrl: string | null;
+        duration: number;
+        viewCount: number;
+        likeCount: number;
+        dislikeCount: number;
+        commentCount: number;
+        isPublished: boolean;
+        visibility: VideoVisibility;
+        processingStatus: ProcessingStatus;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt: Date | null;
+    };
     validate(): void;
 }

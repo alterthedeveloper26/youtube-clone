@@ -13,6 +13,17 @@ export type {
 // Category types
 export type { CategoryResponse } from "./categories.types";
 
+// Video types
+export type {
+  VideoVisibility,
+  ProcessingStatus,
+  RequestUploadUrlRequest,
+  RequestUploadUrlResponse,
+  CompleteUploadRequest,
+  VideoResponse,
+  GetVideosQuery,
+  VideosListResponse,
+} from "./videos.types";
+
 // Add more type exports here as you create new API resources:
-// export type { VideoRequest, VideoResponse } from "./videos.types";
 // export type { ChannelRequest, ChannelResponse } from "./channels.types";
