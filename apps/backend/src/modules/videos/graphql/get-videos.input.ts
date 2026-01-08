@@ -7,14 +7,25 @@ export class GetVideosInput {
   @IsOptional()
   @IsInt()
   @Min(1)
-  page?: number;
+  @Max(100)
+  first?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  after?: string;
 
   @Field(() => Int, { nullable: true })
   @IsOptional()
   @IsInt()
   @Min(1)
   @Max(100)
-  limit?: number;
+  last?: number;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  before?: string;
 
   @Field({ nullable: true })
   @IsOptional()

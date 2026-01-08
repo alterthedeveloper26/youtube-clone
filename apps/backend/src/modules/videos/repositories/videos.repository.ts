@@ -4,6 +4,7 @@ import { Repository, Like, IsNull, In } from 'typeorm';
 import { Video } from '../entities/video.entity';
 import { VideoDomain } from '../domain/video.domain';
 import { VideoMapper } from '../domain/mappers/video.mapper';
+import { CursorUtil } from '../../../shared/utils/cursor.util';
 
 @Injectable()
 export class VideosRepository {
@@ -198,5 +199,153 @@ export class VideosRepository {
       take,
       order: orderBy || { createdAt: 'DESC' },
     });
+  }
+
+  /**
+   * Find entities with cursor-based pagination
+   * Returns entities with cursor information
+   */
+  async findWithCursor(options: {
+    where?: any;
+    first?: number;
+    after?: string;
+    last?: number;
+    before?: string;
+    orderBy?: { [key: string]: 'ASC' | 'DESC' };
+  }): Promise<{
+    entities: Video[];
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  }> {
+    const { where = {}, first, after, last, before, orderBy } = options;
+    const order = orderBy || { createdAt: 'DESC' };
+    const orderKey = Object.keys(order)[0];
+    const orderDirection = order[orderKey];
+
+    let queryBuilder = this.repository
+      .createQueryBuilder('video')
+      .leftJoinAndSelect('video.channel', 'channel')
+      .leftJoinAndSelect('channel.user', 'user')
+      .where('video.deletedAt IS NULL');
+
+    // Apply additional where conditions
+    if (where.isPublished !== undefined) {
+      queryBuilder = queryBuilder.andWhere('video.isPublished = :isPublished', {
+        isPublished: where.isPublished,
+      });
+    }
+    if (where.visibility) {
+      queryBuilder = queryBuilder.andWhere('video.visibility = :visibility', {
+        visibility: where.visibility,
+      });
+    }
+    if (where.title) {
+      queryBuilder = queryBuilder.andWhere('video.title LIKE :title', {
+        title: `%${where.title}%`,
+      });
+    }
+    if (where.channelId) {
+      queryBuilder = queryBuilder.andWhere('video.channelId = :channelId', {
+        channelId: where.channelId,
+      });
+    }
+
+    // Handle cursor-based pagination
+    if (first && after) {
+      // Forward pagination: get items after cursor
+      const decoded = CursorUtil.decode(after);
+      if (decoded) {
+        if (orderDirection === 'DESC') {
+          queryBuilder = queryBuilder.andWhere(
+            `(video.${orderKey} < :cursorValue OR (video.${orderKey} = :cursorValue AND video.id < :cursorId))`,
+            {
+              cursorValue: decoded.timestamp,
+              cursorId: decoded.id,
+            },
+          );
+        } else {
+          queryBuilder = queryBuilder.andWhere(
+            `(video.${orderKey} > :cursorValue OR (video.${orderKey} = :cursorValue AND video.id > :cursorId))`,
+            {
+              cursorValue: decoded.timestamp,
+              cursorId: decoded.id,
+            },
+          );
+        }
+      }
+      queryBuilder = queryBuilder
+        .orderBy(`video.${orderKey}`, orderDirection)
+        .addOrderBy('video.id', orderDirection)
+        .limit(first + 1); // Fetch one extra to check if there's a next page
+    } else if (last && before) {
+      // Backward pagination: get items before cursor
+      const decoded = CursorUtil.decode(before);
+      if (decoded) {
+        if (orderDirection === 'DESC') {
+          queryBuilder = queryBuilder.andWhere(
+            `(video.${orderKey} > :cursorValue OR (video.${orderKey} = :cursorValue AND video.id > :cursorId))`,
+            {
+              cursorValue: decoded.timestamp,
+              cursorId: decoded.id,
+            },
+          );
+        } else {
+          queryBuilder = queryBuilder.andWhere(
+            `(video.${orderKey} < :cursorValue OR (video.${orderKey} = :cursorValue AND video.id < :cursorId))`,
+            {
+              cursorValue: decoded.timestamp,
+              cursorId: decoded.id,
+            },
+          );
+        }
+      }
+      queryBuilder = queryBuilder
+        .orderBy(`video.${orderKey}`, orderDirection === 'DESC' ? 'ASC' : 'DESC')
+        .addOrderBy('video.id', orderDirection === 'DESC' ? 'ASC' : 'DESC')
+        .limit(last + 1); // Fetch one extra to check if there's a previous page
+    } else if (first) {
+      // First page: no cursor
+      queryBuilder = queryBuilder
+        .orderBy(`video.${orderKey}`, orderDirection)
+        .addOrderBy('video.id', orderDirection)
+        .limit(first + 1);
+    } else if (last) {
+      // Last page: no cursor (reverse order)
+      queryBuilder = queryBuilder
+        .orderBy(`video.${orderKey}`, orderDirection === 'DESC' ? 'ASC' : 'DESC')
+        .addOrderBy('video.id', orderDirection === 'DESC' ? 'ASC' : 'DESC')
+        .limit(last + 1);
+    }
+
+    const entities = await queryBuilder.getMany();
+
+    // Reverse if backward pagination
+    if (last && before) {
+      entities.reverse();
+    }
+
+    // Determine pagination info
+    let hasNextPage = false;
+    let hasPreviousPage = false;
+
+    if (first) {
+      hasNextPage = entities.length > first;
+      if (hasNextPage) {
+        entities.pop(); // Remove the extra item
+      }
+      hasPreviousPage = !!after;
+    } else if (last) {
+      hasPreviousPage = entities.length > last;
+      if (hasPreviousPage) {
+        entities.pop(); // Remove the extra item
+      }
+      hasNextPage = !!before;
+    }
+
+    return {
+      entities,
+      hasNextPage,
+      hasPreviousPage,
+    };
   }
 }

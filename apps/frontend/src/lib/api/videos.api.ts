@@ -3,7 +3,9 @@
  * All video-related API calls are organized here
  */
 
-import { apiRequest, graphqlRequest } from "./config";
+import { apiRequest } from "./config";
+import { apolloClient } from "@/providers/apollo.provider";
+import { GET_VIDEOS_QUERY } from "./graphql/queries/videos.queries";
 import type {
   RequestUploadUrlRequest,
   RequestUploadUrlResponse,
@@ -11,6 +13,8 @@ import type {
   VideoResponse,
   GetVideosQuery,
   VideosListResponse,
+  GetVideosGraphQLQuery,
+  VideoConnection,
 } from "./types/videos.types";
 
 /**
@@ -80,48 +84,28 @@ export async function getVideoById(id: string): Promise<VideoResponse> {
 }
 
 /**
- * Get all videos with pagination and filters using GraphQL
- * @param query - Query parameters (page, limit, search, channelId)
- * @returns Paginated list of videos
+ * Get all videos with cursor-based pagination using GraphQL
+ * @param query - Query parameters (first, after, last, before, search, channelId)
+ * @returns Video connection with edges and pageInfo
  */
 export async function getVideosGraphQL(
-  query?: GetVideosQuery
-): Promise<VideosListResponse> {
-  const graphqlQuery = `
-    query GetVideos($input: GetVideosInput) {
-      videos(input: $input) {
-        data {
-          id
-          channelId
-          title
-          description
-          videoUrl
-          videoKey
-          hls720pUrl
-          thumbnailUrl
-          duration
-          viewCount
-          likeCount
-          dislikeCount
-          commentCount
-          isPublished
-          visibility
-          processingStatus
-          createdAt
-          updatedAt
-          deletedAt
-        }
-        meta {
-          page
-          limit
-          total
-          totalPages
-        }
-      }
-    }
-  `;
-
-  return graphqlRequest<VideosListResponse>(graphqlQuery, {
-    input: query || undefined,
+  query?: GetVideosGraphQLQuery
+): Promise<VideoConnection> {
+  const result = await apolloClient.query<{ videos: VideoConnection }>({
+    query: GET_VIDEOS_QUERY,
+    variables: {
+      input: query || undefined,
+    },
+    errorPolicy: "all",
   });
+
+  if (result.error) {
+    throw new Error(`GraphQL error: ${result.error.message}`);
+  }
+
+  if (!result.data?.videos) {
+    throw new Error("No data returned from GraphQL query");
+  }
+
+  return result.data.videos;
 }

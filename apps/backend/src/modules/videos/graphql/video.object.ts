@@ -74,6 +74,40 @@ export class Video {
 }
 
 @ObjectType()
+export class VideoEdge {
+  @Field(() => Video)
+  node: Video;
+
+  @Field()
+  cursor: string;
+}
+
+@ObjectType()
+export class PageInfo {
+  @Field()
+  hasNextPage: boolean;
+
+  @Field()
+  hasPreviousPage: boolean;
+
+  @Field({ nullable: true })
+  startCursor: string | null;
+
+  @Field({ nullable: true })
+  endCursor: string | null;
+}
+
+@ObjectType()
+export class VideoConnection {
+  @Field(() => [VideoEdge])
+  edges: VideoEdge[];
+
+  @Field(() => PageInfo)
+  pageInfo: PageInfo;
+}
+
+// Keep old types for backward compatibility with REST API
+@ObjectType()
 export class VideosMeta {
   @Field(() => Int)
   page: number;

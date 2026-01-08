@@ -17,27 +17,46 @@ const graphql_1 = require("@nestjs/graphql");
 const videos_service_1 = require("../videos.service");
 const video_object_1 = require("./video.object");
 const get_videos_input_1 = require("./get-videos.input");
+const video_mapper_1 = require("../domain/mappers/video.mapper");
+const cursor_util_1 = require("../../../shared/utils/cursor.util");
 let VideosResolver = class VideosResolver {
     videosService;
     constructor(videosService) {
         this.videosService = videosService;
     }
     async getVideos(input) {
-        const result = await this.videosService.findAll({
-            page: input?.page,
-            limit: input?.limit,
+        const result = await this.videosService.findAllWithCursor({
+            first: input?.first,
+            after: input?.after,
+            last: input?.last,
+            before: input?.before,
             search: input?.search,
             channelId: input?.channelId,
         });
+        const edges = result.entities.map((entity) => {
+            const videoDomain = video_mapper_1.VideoMapper.toDomain(entity);
+            const video = videoDomain.toGraphQL();
+            const cursor = cursor_util_1.CursorUtil.encode(entity.id, entity.createdAt);
+            return {
+                node: video,
+                cursor,
+            };
+        });
+        const pageInfo = {
+            hasNextPage: result.hasNextPage,
+            hasPreviousPage: result.hasPreviousPage,
+            startCursor: edges.length > 0 ? edges[0].cursor : null,
+            endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : null,
+        };
         return {
-            data: result.data.map((videoDomain) => videoDomain.toGraphQL()),
-            meta: result.meta,
+            edges,
+            pageInfo,
         };
     }
 };
 exports.VideosResolver = VideosResolver;
 __decorate([
-    (0, graphql_1.Query)(() => video_object_1.VideosListResponse, { name: 'videos' }),
+    (0, graphql_1.Query)(() => video_object_1.VideoConnection, { name: 'videos' }),
     __param(0, (0, graphql_1.Args)('input', { nullable: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [get_videos_input_1.GetVideosInput]),

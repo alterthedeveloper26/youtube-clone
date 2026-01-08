@@ -30,6 +30,20 @@ export declare class Video {
     updatedAt: Date;
     deletedAt: Date | null;
 }
+export declare class VideoEdge {
+    node: Video;
+    cursor: string;
+}
+export declare class PageInfo {
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    startCursor: string | null;
+    endCursor: string | null;
+}
+export declare class VideoConnection {
+    edges: VideoEdge[];
+    pageInfo: PageInfo;
+}
 export declare class VideosMeta {
     page: number;
     limit: number;

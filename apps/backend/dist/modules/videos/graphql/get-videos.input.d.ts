@@ -1,6 +1,8 @@
 export declare class GetVideosInput {
-    page?: number;
-    limit?: number;
+    first?: number;
+    after?: string;
+    last?: number;
+    before?: string;
     search?: string;
     channelId?: string;
 }

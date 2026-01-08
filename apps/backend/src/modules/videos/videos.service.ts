@@ -181,4 +181,39 @@ export class VideosService {
       },
     };
   }
+
+  async findAllWithCursor(options: {
+    first?: number;
+    after?: string;
+    last?: number;
+    before?: string;
+    search?: string;
+    channelId?: string;
+  }) {
+    const { first, after, last, before, search, channelId } = options;
+
+    const where: any = {
+      isPublished: true,
+      visibility: 'public',
+    };
+
+    if (search) {
+      where.title = Like(`%${search}%`);
+    }
+
+    if (channelId) {
+      where.channelId = channelId;
+    }
+
+    const result = await this.videosRepository.findWithCursor({
+      where,
+      first,
+      after,
+      last,
+      before,
+      orderBy: { createdAt: 'DESC' },
+    });
+
+    return result;
+  }
 }

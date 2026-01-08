@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VideosListResponse = exports.VideosMeta = exports.Video = exports.ProcessingStatus = exports.VideoVisibility = void 0;
+exports.VideosListResponse = exports.VideosMeta = exports.VideoConnection = exports.PageInfo = exports.VideoEdge = exports.Video = exports.ProcessingStatus = exports.VideoVisibility = void 0;
 const graphql_1 = require("@nestjs/graphql");
 var VideoVisibility;
 (function (VideoVisibility) {
@@ -125,6 +125,64 @@ __decorate([
 exports.Video = Video = __decorate([
     (0, graphql_1.ObjectType)()
 ], Video);
+let VideoEdge = class VideoEdge {
+    node;
+    cursor;
+};
+exports.VideoEdge = VideoEdge;
+__decorate([
+    (0, graphql_1.Field)(() => Video),
+    __metadata("design:type", Video)
+], VideoEdge.prototype, "node", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], VideoEdge.prototype, "cursor", void 0);
+exports.VideoEdge = VideoEdge = __decorate([
+    (0, graphql_1.ObjectType)()
+], VideoEdge);
+let PageInfo = class PageInfo {
+    hasNextPage;
+    hasPreviousPage;
+    startCursor;
+    endCursor;
+};
+exports.PageInfo = PageInfo;
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", Boolean)
+], PageInfo.prototype, "hasNextPage", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", Boolean)
+], PageInfo.prototype, "hasPreviousPage", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", Object)
+], PageInfo.prototype, "startCursor", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", Object)
+], PageInfo.prototype, "endCursor", void 0);
+exports.PageInfo = PageInfo = __decorate([
+    (0, graphql_1.ObjectType)()
+], PageInfo);
+let VideoConnection = class VideoConnection {
+    edges;
+    pageInfo;
+};
+exports.VideoConnection = VideoConnection;
+__decorate([
+    (0, graphql_1.Field)(() => [VideoEdge]),
+    __metadata("design:type", Array)
+], VideoConnection.prototype, "edges", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => PageInfo),
+    __metadata("design:type", PageInfo)
+], VideoConnection.prototype, "pageInfo", void 0);
+exports.VideoConnection = VideoConnection = __decorate([
+    (0, graphql_1.ObjectType)()
+], VideoConnection);
 let VideosMeta = class VideosMeta {
     page;
     limit;

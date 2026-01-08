@@ -27,4 +27,18 @@ export declare class VideosRepository {
         take?: number;
         orderBy?: any;
     }): Promise<Video[]>;
+    findWithCursor(options: {
+        where?: any;
+        first?: number;
+        after?: string;
+        last?: number;
+        before?: string;
+        orderBy?: {
+            [key: string]: 'ASC' | 'DESC';
+        };
+    }): Promise<{
+        entities: Video[];
+        hasNextPage: boolean;
+        hasPreviousPage: boolean;
+    }>;
 }

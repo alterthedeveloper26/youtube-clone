@@ -55,6 +55,7 @@ export interface VideoResponse {
   deletedAt: string | null;
 }
 
+// REST API query (offset-based pagination)
 export interface GetVideosQuery {
   page?: number;
   limit?: number;
@@ -62,6 +63,7 @@ export interface GetVideosQuery {
   channelId?: string;
 }
 
+// REST API response (offset-based pagination)
 export interface VideosListResponse {
   data: VideoResponse[];
   meta: {
@@ -70,5 +72,33 @@ export interface VideosListResponse {
     total: number;
     totalPages: number;
   };
+}
+
+// GraphQL query (cursor-based pagination)
+export interface GetVideosGraphQLQuery {
+  first?: number;
+  after?: string;
+  last?: number;
+  before?: string;
+  search?: string;
+  channelId?: string;
+}
+
+// GraphQL response (cursor-based pagination - Relay Connection format)
+export interface VideoEdge {
+  node: VideoResponse;
+  cursor: string;
+}
+
+export interface PageInfo {
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  startCursor: string | null;
+  endCursor: string | null;
+}
+
+export interface VideoConnection {
+  edges: VideoEdge[];
+  pageInfo: PageInfo;
 }
 

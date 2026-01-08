@@ -32,4 +32,16 @@ export declare class VideosService {
             totalPages: number;
         };
     }>;
+    findAllWithCursor(options: {
+        first?: number;
+        after?: string;
+        last?: number;
+        before?: string;
+        search?: string;
+        channelId?: string;
+    }): Promise<{
+        entities: import("./entities/video.entity").Video[];
+        hasNextPage: boolean;
+        hasPreviousPage: boolean;
+    }>;
 }

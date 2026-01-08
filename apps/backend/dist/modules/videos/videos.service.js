@@ -111,6 +111,28 @@ let VideosService = class VideosService {
             },
         };
     }
+    async findAllWithCursor(options) {
+        const { first, after, last, before, search, channelId } = options;
+        const where = {
+            isPublished: true,
+            visibility: 'public',
+        };
+        if (search) {
+            where.title = (0, typeorm_1.Like)(`%${search}%`);
+        }
+        if (channelId) {
+            where.channelId = channelId;
+        }
+        const result = await this.videosRepository.findWithCursor({
+            where,
+            first,
+            after,
+            last,
+            before,
+            orderBy: { createdAt: 'DESC' },
+        });
+        return result;
+    }
 };
 exports.VideosService = VideosService;
 exports.VideosService = VideosService = __decorate([

@@ -18,6 +18,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const video_entity_1 = require("../entities/video.entity");
 const video_mapper_1 = require("../domain/mappers/video.mapper");
+const cursor_util_1 = require("../../../shared/utils/cursor.util");
 let VideosRepository = class VideosRepository {
     repository;
     constructor(repository) {
@@ -121,6 +122,116 @@ let VideosRepository = class VideosRepository {
             take,
             order: orderBy || { createdAt: 'DESC' },
         });
+    }
+    async findWithCursor(options) {
+        const { where = {}, first, after, last, before, orderBy } = options;
+        const order = orderBy || { createdAt: 'DESC' };
+        const orderKey = Object.keys(order)[0];
+        const orderDirection = order[orderKey];
+        let queryBuilder = this.repository
+            .createQueryBuilder('video')
+            .leftJoinAndSelect('video.channel', 'channel')
+            .leftJoinAndSelect('channel.user', 'user')
+            .where('video.deletedAt IS NULL');
+        if (where.isPublished !== undefined) {
+            queryBuilder = queryBuilder.andWhere('video.isPublished = :isPublished', {
+                isPublished: where.isPublished,
+            });
+        }
+        if (where.visibility) {
+            queryBuilder = queryBuilder.andWhere('video.visibility = :visibility', {
+                visibility: where.visibility,
+            });
+        }
+        if (where.title) {
+            queryBuilder = queryBuilder.andWhere('video.title LIKE :title', {
+                title: `%${where.title}%`,
+            });
+        }
+        if (where.channelId) {
+            queryBuilder = queryBuilder.andWhere('video.channelId = :channelId', {
+                channelId: where.channelId,
+            });
+        }
+        if (first && after) {
+            const decoded = cursor_util_1.CursorUtil.decode(after);
+            if (decoded) {
+                if (orderDirection === 'DESC') {
+                    queryBuilder = queryBuilder.andWhere(`(video.${orderKey} < :cursorValue OR (video.${orderKey} = :cursorValue AND video.id < :cursorId))`, {
+                        cursorValue: decoded.timestamp,
+                        cursorId: decoded.id,
+                    });
+                }
+                else {
+                    queryBuilder = queryBuilder.andWhere(`(video.${orderKey} > :cursorValue OR (video.${orderKey} = :cursorValue AND video.id > :cursorId))`, {
+                        cursorValue: decoded.timestamp,
+                        cursorId: decoded.id,
+                    });
+                }
+            }
+            queryBuilder = queryBuilder
+                .orderBy(`video.${orderKey}`, orderDirection)
+                .addOrderBy('video.id', orderDirection)
+                .limit(first + 1);
+        }
+        else if (last && before) {
+            const decoded = cursor_util_1.CursorUtil.decode(before);
+            if (decoded) {
+                if (orderDirection === 'DESC') {
+                    queryBuilder = queryBuilder.andWhere(`(video.${orderKey} > :cursorValue OR (video.${orderKey} = :cursorValue AND video.id > :cursorId))`, {
+                        cursorValue: decoded.timestamp,
+                        cursorId: decoded.id,
+                    });
+                }
+                else {
+                    queryBuilder = queryBuilder.andWhere(`(video.${orderKey} < :cursorValue OR (video.${orderKey} = :cursorValue AND video.id < :cursorId))`, {
+                        cursorValue: decoded.timestamp,
+                        cursorId: decoded.id,
+                    });
+                }
+            }
+            queryBuilder = queryBuilder
+                .orderBy(`video.${orderKey}`, orderDirection === 'DESC' ? 'ASC' : 'DESC')
+                .addOrderBy('video.id', orderDirection === 'DESC' ? 'ASC' : 'DESC')
+                .limit(last + 1);
+        }
+        else if (first) {
+            queryBuilder = queryBuilder
+                .orderBy(`video.${orderKey}`, orderDirection)
+                .addOrderBy('video.id', orderDirection)
+                .limit(first + 1);
+        }
+        else if (last) {
+            queryBuilder = queryBuilder
+                .orderBy(`video.${orderKey}`, orderDirection === 'DESC' ? 'ASC' : 'DESC')
+                .addOrderBy('video.id', orderDirection === 'DESC' ? 'ASC' : 'DESC')
+                .limit(last + 1);
+        }
+        const entities = await queryBuilder.getMany();
+        if (last && before) {
+            entities.reverse();
+        }
+        let hasNextPage = false;
+        let hasPreviousPage = false;
+        if (first) {
+            hasNextPage = entities.length > first;
+            if (hasNextPage) {
+                entities.pop();
+            }
+            hasPreviousPage = !!after;
+        }
+        else if (last) {
+            hasPreviousPage = entities.length > last;
+            if (hasPreviousPage) {
+                entities.pop();
+            }
+            hasNextPage = !!before;
+        }
+        return {
+            entities,
+            hasNextPage,
+            hasPreviousPage,
+        };
     }
 };
 exports.VideosRepository = VideosRepository;

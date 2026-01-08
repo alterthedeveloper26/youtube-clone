@@ -13,8 +13,10 @@ exports.GetVideosInput = void 0;
 const graphql_1 = require("@nestjs/graphql");
 const class_validator_1 = require("class-validator");
 let GetVideosInput = class GetVideosInput {
-    page;
-    limit;
+    first;
+    after;
+    last;
+    before;
     search;
     channelId;
 };
@@ -24,8 +26,15 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsInt)(),
     (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(100),
     __metadata("design:type", Number)
-], GetVideosInput.prototype, "page", void 0);
+], GetVideosInput.prototype, "first", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], GetVideosInput.prototype, "after", void 0);
 __decorate([
     (0, graphql_1.Field)(() => graphql_1.Int, { nullable: true }),
     (0, class_validator_1.IsOptional)(),
@@ -33,7 +42,13 @@ __decorate([
     (0, class_validator_1.Min)(1),
     (0, class_validator_1.Max)(100),
     __metadata("design:type", Number)
-], GetVideosInput.prototype, "limit", void 0);
+], GetVideosInput.prototype, "last", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], GetVideosInput.prototype, "before", void 0);
 __decorate([
     (0, graphql_1.Field)({ nullable: true }),
     (0, class_validator_1.IsOptional)(),
